@@ -1,0 +1,8 @@
+brands:
+  - name: safepay
+    domain: safepay.pk
+  - name: educative
+    domain: educative.io
+
+alerts:
+  slack_webhook: ""   # filled in Week 3

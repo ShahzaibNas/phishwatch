@@ -39,7 +39,3 @@ Discord Webhooks
 GitHub Actions (planned)
 Docker (planned)
 FastAPI (planned)
-
-## Tech
-
-Python · dnstwist · Certificate Transparency logs · (more as it grows)

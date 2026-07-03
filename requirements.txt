@@ -1,0 +1,4 @@
+dnstwist
+pyyaml
+tldextract
+pytest

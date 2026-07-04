@@ -3,3 +3,4 @@ pyyaml
 tldextract
 pytest
 certstream
+requests

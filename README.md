@@ -21,8 +21,8 @@ Current roadmap:
 
 - [x] Brand permutation & matching engine
 - [x] Certificate Transparency stream ingestion
-- [ ] DNS / liveness enrichment
-- [ ] Scoring + alert delivery (Slack webhook)
+- [x] DNS / liveness enrichment
+- [x] Scoring + alert delivery (Slack webhook)
 - [ ] 24/7 deployment
 
 ## Why I'm Building This

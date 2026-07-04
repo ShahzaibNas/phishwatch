@@ -2,3 +2,4 @@ dnstwist
 pyyaml
 tldextract
 pytest
+certstream

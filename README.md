@@ -19,8 +19,8 @@ Using typo detection, homoglyph analysis and keyword based matching, the system 
 Early development.
 Current roadmap:
 
-- [ ] Brand permutation & matching engine
-- [ ] Certificate Transparency stream ingestion
+- [x] Brand permutation & matching engine
+- [x] Certificate Transparency stream ingestion
 - [ ] DNS / liveness enrichment
 - [ ] Scoring + alert delivery (Slack webhook)
 - [ ] 24/7 deployment

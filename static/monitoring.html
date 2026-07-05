@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Monitoring dashboard — PhishWatch</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/styles.css">
+<style>
+  .dash-head{padding:48px 0 12px}
+  .dash-head h1{font-size:2rem;margin-bottom:6px}
+  .dash-head .sub{color:var(--muted)}
+  .stat-row{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin:28px 0 8px}
+  @media(max-width:640px){.stat-row{grid-template-columns:1fr}}
+  .stat{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px 22px}
+  .stat .k{font-family:var(--mono);font-size:.68rem;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin-bottom:8px}
+  .stat .v{font-family:var(--display);font-weight:700;font-size:1.9rem}
+  .stat .v.cyan{color:var(--cyan)}.stat .v.coral{color:var(--coral)}
+  .grid{display:grid;grid-template-columns:340px 1fr;gap:24px;align-items:start;padding:24px 0 60px}
+  @media(max-width:840px){.grid{grid-template-columns:1fr}}
+  .panel{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:22px}
+  .panel h2{font-family:var(--display);font-size:1.1rem;margin-bottom:16px}
+  .brow{display:flex;justify-content:space-between;align-items:center;padding:11px 0;border-top:1px solid var(--line);font-size:.9rem}
+  .brow:first-of-type{border-top:none}.brow .d{font-family:var(--mono);color:var(--muted);font-size:.8rem}
+  .add-form{margin-top:18px;display:flex;flex-direction:column;gap:10px}
+  .add-form input{background:var(--bg-2);border:1px solid var(--line);border-radius:9px;padding:10px 12px;color:var(--text);font-family:var(--mono);font-size:.88rem}
+  .add-form button{font-family:var(--display);font-weight:600;background:linear-gradient(135deg,var(--cyan),#4ADEDE);color:#06132a;border:none;border-radius:9px;padding:11px;cursor:pointer}
+  .add-form button:disabled{opacity:.5}
+  .controls{display:flex;gap:8px;margin-bottom:16px}
+  .controls button{font-family:var(--mono);font-size:.8rem;background:var(--bg-2);border:1px solid var(--line);color:var(--muted);border-radius:8px;padding:7px 14px;cursor:pointer}
+  .controls button.on{border-color:var(--cyan);color:var(--cyan)}
+  table{width:100%;border-collapse:collapse}
+  th{font-family:var(--mono);font-size:.68rem;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);text-align:left;padding:10px 12px;font-weight:500}
+  td{padding:12px;border-top:1px solid var(--line);font-size:.86rem}
+  td.dom{font-family:var(--mono);word-break:break-all}
+  .pill{font-family:var(--mono);font-weight:700;font-size:.72rem;padding:4px 9px;border-radius:7px;white-space:nowrap}
+  .p-crit{color:var(--coral);background:rgba(251,93,93,.13);border:1px solid rgba(251,93,93,.35)}
+  .p-warn{color:var(--amber);background:rgba(251,191,36,.12);border:1px solid rgba(251,191,36,.3)}
+  .p-low{color:var(--muted);background:rgba(154,160,199,.1);border:1px solid var(--line)}
+  .time{color:var(--muted);font-family:var(--mono);font-size:.76rem;white-space:nowrap}
+  .empty{color:var(--muted);text-align:center;padding:40px;font-size:.9rem}
+</style>
+</head>
+<body data-page="monitoring">
+
+<div class="wrap dash-head">
+  <h1>Monitoring dashboard</h1>
+  <p class="sub">Live detections from the Certificate Transparency stream for your monitored brands.</p>
+  <div class="stat-row">
+    <div class="stat"><div class="k">Brands monitored</div><div class="v cyan" id="sBrands">—</div></div>
+    <div class="stat"><div class="k">Detections stored</div><div class="v" id="sTotal">—</div></div>
+    <div class="stat"><div class="k">High-risk detections</div><div class="v coral" id="sHigh">—</div></div>
+  </div>
+</div>
+
+<div class="wrap grid">
+  <div class="panel">
+    <h2>Monitored brands</h2>
+    <div id="brands"><div class="empty">Loading…</div></div>
+    <div class="add-form">
+      <input id="bName" placeholder="Brand name (e.g. paypal)" />
+      <input id="bDomain" placeholder="Domain (e.g. paypal.com)" />
+      <button id="addBtn">Add brand</button>
+    </div>
+  </div>
+  <div class="panel">
+    <h2>Recent detections</h2>
+    <div class="controls">
+      <button id="fHigh" class="on">High risk only</button>
+      <button id="fAll">Show all</button>
+    </div>
+    <div id="alerts"><div class="empty">Loading…</div></div>
+  </div>
+</div>
+
+<script src="/partials.js"></script>
+<script>
+  let minScore=4;
+  async function loadBrands(){
+    const r=await fetch("/api/brands"),d=await r.json();
+    document.getElementById("sBrands").textContent=d.brands.length;
+    const host=document.getElementById("brands");
+    host.innerHTML=d.brands.length?d.brands.map(b=>'<div class="brow"><span>'+esc(b.name)+'</span><span class="d">'+esc(b.domain)+'</span></div>').join(""):'<div class="empty">No brands yet. Add one below.</div>';
+  }
+  async function loadStats(){
+    const r=await fetch("/api/alerts?min_score=0"),d=await r.json();
+    document.getElementById("sTotal").textContent=d.alerts.length;
+    document.getElementById("sHigh").textContent=d.alerts.filter(a=>a.score>=4).length;
+  }
+  async function loadAlerts(){
+    const r=await fetch("/api/alerts?min_score="+minScore),d=await r.json();
+    const host=document.getElementById("alerts");
+    if(!d.alerts.length){host.innerHTML='<div class="empty">No detections yet. The watcher writes here as it finds them.</div>';return;}
+    const rows=d.alerts.map(a=>{
+      const p=a.score>=6?["p-crit","Critical"]:a.score>=4?["p-warn","Elevated"]:["p-low","Low"];
+      return '<tr><td class="dom">'+esc(a.domain)+'</td><td><span class="pill '+p[0]+'">'+a.score+'/7</span></td><td>'+esc(a.brand)+'</td><td class="time">'+fmt(a.seen_at)+'</td></tr>';
+    }).join("");
+    host.innerHTML='<table><thead><tr><th>Domain</th><th>Risk</th><th>Brand</th><th>Seen</th></tr></thead><tbody>'+rows+'</tbody></table>';
+  }
+  async function addBrand(){
+    const name=document.getElementById("bName").value.trim(),domain=document.getElementById("bDomain").value.trim();
+    if(!domain)return;
+    const btn=document.getElementById("addBtn");btn.disabled=true;
+    try{
+      const r=await fetch("/api/brands",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({name,domain})});
+      if(!r.ok){let m="Error "+r.status;try{const e=await r.json();if(e.detail)m=e.detail;}catch{}alert(m);return;}
+      document.getElementById("bName").value="";document.getElementById("bDomain").value="";loadBrands();
+    }finally{btn.disabled=false;}
+  }
+  function fmt(iso){return new Date(iso).toLocaleString();}
+  function esc(s){return String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));}
+  document.getElementById("addBtn").addEventListener("click",addBrand);
+  document.getElementById("fHigh").addEventListener("click",()=>{minScore=4;tog("fHigh");loadAlerts();});
+  document.getElementById("fAll").addEventListener("click",()=>{minScore=0;tog("fAll");loadAlerts();});
+  function tog(id){document.getElementById("fHigh").classList.toggle("on",id==="fHigh");document.getElementById("fAll").classList.toggle("on",id==="fAll");}
+  loadBrands();loadAlerts();loadStats();
+  setInterval(()=>{loadAlerts();loadStats();},15000);
+</script>
+</body>
+</html>

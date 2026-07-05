@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>About — PhishWatch</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/styles.css">
+<style>
+  .a-hero{position:relative;padding:76px 0 44px;overflow:hidden}
+  .a-hero .inner{position:relative;z-index:1;max-width:720px}
+  .a-hero h1{font-size:clamp(2.1rem,4.8vw,3.2rem);margin:18px 0 18px}
+  .a-hero p{color:var(--muted);font-size:1.12rem;max-width:620px}
+  .prose{max-width:720px;margin:0 auto}
+  .prose h2{margin-top:8px}
+  .prose p{color:var(--ink-2);margin-bottom:18px;font-size:1.04rem}
+  .pillars{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-top:44px}
+  @media(max-width:760px){.pillars{grid-template-columns:1fr}}
+  .stats-band{display:flex;justify-content:center;gap:64px;flex-wrap:wrap;padding:8px 0 0}
+  .st .n{font-family:var(--display);font-weight:700;font-size:2.2rem;color:var(--cyan)}
+  .st .l{font-family:var(--mono);font-size:.74rem;color:var(--muted);text-transform:uppercase;letter-spacing:.08em}
+</style>
+</head>
+<body data-page="about">
+
+<header class="a-hero">
+  <div class="glow"></div>
+  <div class="inner wrap">
+    <span class="eyebrow"><span class="live"></span>About PhishWatch</span>
+    <h1>Enterprise-grade detection, without the enterprise price.</h1>
+    <p>Protecting your brand from impersonation shouldn't require a six-figure security budget. PhishWatch turns the same public infrastructure that secures the web into an early-warning system any team can use.</p>
+  </div>
+</header>
+
+<section class="sec light">
+  <div class="wrap prose">
+    <div class="kicker">Our mission</div>
+    <h2>Close the gap between free tools and enterprise platforms</h2>
+    <p>Every day, attackers register thousands of lookalike domains — subtle misspellings, swapped characters, and non-Latin homographs designed to pass as the real thing. They clone login pages, harvest credentials, and disappear within hours.</p>
+    <p>Enterprise brand-protection platforms detect these attacks well, but they're priced for large security teams with large budgets. Free tools exist, but they stop at generating a list of possibilities — leaving you to figure out which ones are actually dangerous. PhishWatch sits in the middle: the detection depth of the expensive tools, delivered simply and affordably.</p>
+    <div class="stats-band">
+      <div class="st"><div class="n">250k+</div><div class="l">Domains screened / run</div></div>
+      <div class="st"><div class="n">&lt;60s</div><div class="l">Scan time</div></div>
+      <div class="st"><div class="n">Real-time</div><div class="l">Certificate monitoring</div></div>
+    </div>
+  </div>
+</section>
+
+<section class="sec dark">
+  <div class="wrap">
+    <div class="kicker">How we detect</div>
+    <h2>Built on Certificate Transparency</h2>
+    <p class="sec-lede muted">Certificate Transparency logs are public, append-only records of every SSL/TLS certificate issued on the web. Because nearly every phishing site needs a certificate to look legitimate, these logs act as a near-real-time feed of new domains going live — and that's exactly what we watch.</p>
+    <div class="pillars">
+      <div class="card"><span class="ico">&#128225;</span><h3>Watch the stream</h3><p class="muted">We monitor certificate issuance as it happens, so new lookalikes surface within minutes of going live.</p></div>
+      <div class="card"><span class="ico">&#129517;</span><h3>Verify what's real</h3><p class="muted">Every candidate is checked for live DNS and a responding web server — evidence, not just possibility.</p></div>
+      <div class="card"><span class="ico">&#9878;&#65039;</span><h3>Score the risk</h3><p class="muted">A transparent 7-point model ranks each threat so you always know what to act on first.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="sec light">
+  <div class="wrap center">
+    <div class="kicker">Get started</div>
+    <h2>See who's impersonating you today</h2>
+    <p class="sec-lede muted" style="margin-bottom:28px">Run a free scan of your domain and get a scored report of live lookalikes in under a minute.</p>
+    <a href="/scan.html" class="btn btn-light">Scan my domain</a>
+  </div>
+</section>
+
+<script src="/partials.js"></script>
+</body>
+</html>

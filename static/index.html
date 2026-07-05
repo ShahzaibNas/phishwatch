@@ -71,7 +71,14 @@
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ domain })
         });
-        if (!res.ok) throw new Error("Server returned " + res.status);
+        if (!res.ok) {
+          let msg = "Server returned " + res.status;
+          try {
+            const errData = await res.json();
+            if (errData.detail) msg = errData.detail;
+          } catch { /* keep the status-code fallback */ }
+          throw new Error(msg);
+        }
         const data = await res.json();
         render(data);
       } catch (err) {

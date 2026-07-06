@@ -22,6 +22,27 @@ Attackers register thousands of lookalike domains every day — `paypa1.com`, `x
 
 PhishWatch is built as decoupled components that share a database. The stream watcher and the web app never talk directly — the database is their meeting point, which keeps each component independently testable and replaceable.
 
+```
+        Certificate Transparency stream
+                     |
+                     v
+   +------------------------------------------+
+   |  Matcher  ->  Enrichment  ->  Scorer     |
+   |             (DNS + HTTP)                  |
+   +------------------------------------------+
+                     |
+                     v
+        +---------------------------+
+        |   SQLite / PostgreSQL     |  ->  Alerts (Discord / Slack)
+        +---------------------------+
+                     |
+                     v
+   +------------------------------------------+
+   |  FastAPI web app                         |
+   |  Scan API  +  Monitoring dashboard       |
+   +------------------------------------------+
+```
+
 ## Tech Stack
 
 Python · FastAPI · SQLModel · dnstwist · tldextract · Certificate Transparency (certstream) · pytest · vanilla JS/CSS frontend
@@ -60,6 +81,24 @@ python -m pytest tests/ -v
 ```
 
 ## Project Structure
+
+```
+phishwatch/
+├── api.py                 # FastAPI web app: scan API + dashboard endpoints
+├── main.py                # CLI entry: continuous monitoring (watch mode)
+├── src/
+│   ├── matcher.py         # brand permutation & matching engine
+│   ├── stream.py          # Certificate Transparency stream client
+│   ├── enrich.py          # DNS resolution & liveness checks
+│   ├── scorer.py          # 7-point risk scoring
+│   ├── scanner.py         # one-shot scan engine
+│   ├── alerts.py          # Discord / Slack webhook delivery
+│   └── db.py              # SQLModel models & data access
+├── static/                # five-page web frontend
+├── tests/                 # pytest suite
+├── config.example.yaml
+└── requirements.txt
+```
 
 ## Roadmap
 

@@ -1,6 +1,5 @@
 /* Shared nav + footer for all PhishWatch pages.
-   Each page sets <body data-page="home|scan|monitoring|pricing|about">
-   so the correct nav link is highlighted. */
+   Each page sets <body data-page="home|scan|monitoring|pricing|about">. */
 (function(){
   const page = document.body.getAttribute("data-page") || "";
   const link = (href,label,key)=>
